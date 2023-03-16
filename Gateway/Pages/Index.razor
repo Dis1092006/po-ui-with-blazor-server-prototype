@@ -1,6 +1,45 @@
 ﻿@page "/"
 
+@using Gateway.Services
+@using Gateway.Data
+
+@inject IPurchaseOrderService PurchaseOrderService
+@inject NavigationManager NavigationManager
+
 <PageTitle>Index</PageTitle>
 
+<RadzenDataList Data="@_purchaseOrders">
+    <Template Context="purchaseOrder">
+        <RadzenCard>
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenText>@purchaseOrder.PoNumber</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenText>@purchaseOrder.PoDate</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenText>@purchaseOrder.SupplierId</RadzenText>
+                </RadzenColumn>
+                <RadzenColumn>
+                    <RadzenButton Text="View PO" Click="@(() => ViewPoClicked(@purchaseOrder))"></RadzenButton>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenCard>
+    </Template>
+</RadzenDataList>
 
-<RadzenButton Text="Hi"></RadzenButton>
+@code
+{
+    private IEnumerable<PurchaseOrder>? _purchaseOrders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _purchaseOrders = await PurchaseOrderService.GetPurchaseOrdersAsync();
+    }
+    
+    private void ViewPoClicked(PurchaseOrder purchaseOrder)
+    {
+        NavigationManager.NavigateTo($"/purchase-order/{purchaseOrder.PoNumber}");
+    }
+}

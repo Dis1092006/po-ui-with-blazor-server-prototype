@@ -1,0 +1,28 @@
+@page "/purchase-order/{id}"
+
+@using Gateway.Services
+@using Gateway.Data
+
+@inject IPurchaseOrderService PurchaseOrderService
+
+<h3>PurchaseOrder: @PoNumber</h3>
+
+<RadzenText>@PurchaseOrder.PoDate</RadzenText>
+
+@code {
+    private int PoNumber { get; set; }
+    private PurchaseOrder PurchaseOrder { get; set; }
+
+    [Parameter]
+    public string id
+    {
+        get => PoNumber.ToString();
+        set => PoNumber = int.Parse(value);
+    }
+
+    protected override void OnInitialized()
+    {
+        PurchaseOrder = PurchaseOrderService.GetPurchaseOrderAsync(PoNumber).Result;
+    }
+
+}

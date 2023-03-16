@@ -1,8 +1,11 @@
+using Gateway.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
 
 var app = builder.Build();
 
