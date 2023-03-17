@@ -1,4 +1,5 @@
 using Gateway.Services;
+using Gateway.Services.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
+
+builder.Services.AddHttpClient<IPoApiClient, PoApiClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ConnectionStrings:PoApiHost"]);
+});
 
 var app = builder.Build();
 

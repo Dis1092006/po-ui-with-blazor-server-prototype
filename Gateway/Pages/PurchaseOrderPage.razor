@@ -7,11 +7,12 @@
 
 <h3>PurchaseOrder: @PoNumber</h3>
 
-<RadzenText>@PurchaseOrder.PoDate</RadzenText>
+<RadzenText>Date: @PurchaseOrder?.PoDate</RadzenText>
+<RadzenText>Items count: @PurchaseOrder?.Items?.Count</RadzenText>
 
 @code {
     private int PoNumber { get; set; }
-    private PurchaseOrder PurchaseOrder { get; set; }
+    private PurchaseOrder? PurchaseOrder { get; set; }
 
     [Parameter]
     public string id
@@ -20,9 +21,9 @@
         set => PoNumber = int.Parse(value);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        PurchaseOrder = PurchaseOrderService.GetPurchaseOrderAsync(PoNumber).Result;
+        PurchaseOrder = await PurchaseOrderService.GetPurchaseOrderAsync(PoNumber);
     }
 
 }

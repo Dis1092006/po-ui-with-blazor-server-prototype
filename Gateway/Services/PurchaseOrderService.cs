@@ -5,37 +5,18 @@ namespace Gateway.Services;
 
 public class PurchaseOrderService : IPurchaseOrderService
 {
+    private readonly IPoApiClient _poApiClient;
+
     public PurchaseOrderService(IPoApiClient poApiClient)
     {
+        _poApiClient = poApiClient;
     }
 
-    public Task<PurchaseOrder> GetPurchaseOrderAsync(int poNumber)
+    public async Task<PurchaseOrder> GetPurchaseOrderAsync(int poNumber)
     {
-        return Task.FromResult(new PurchaseOrder
-        {
-            PoNumber = poNumber,
-            SupplierId = 1,
-            PoDate = DateTime.Now,
-            Items = new List<PurchaseOrderItem>
-            {
-                new PurchaseOrderItem
-                {
-                    PoNumber = poNumber,
-                    ItemNumber = 1,
-                    LocalSku = "ITEM-1",
-                    Quantity = 2,
-                    Cost = 1.12
-                },
-                new PurchaseOrderItem
-                {
-                    PoNumber = poNumber,
-                    ItemNumber = 2,
-                    LocalSku = "ITEM-2",
-                    Quantity = 4,
-                    Cost = 2.34
-                }
-            }
-        });
+        var po = await _poApiClient.GetPurchaseOrderAsync(poNumber);
+        
+        return po;
     }
 
     public Task<List<PurchaseOrder>> GetPurchaseOrdersAsync()
