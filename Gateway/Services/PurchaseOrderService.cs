@@ -1,4 +1,4 @@
-using Gateway.Data;
+using Gateway.Data.Models;
 using Gateway.Services.Api;
 
 namespace Gateway.Services;

@@ -1,47 +1,8 @@
-using Gateway.Data;
+using Gateway.Data.Dto;
+using Gateway.Data.Models;
 using Newtonsoft.Json;
 
 namespace Gateway.Services.Api;
-
-public class PurchaseOrdersDto
-{
-    public string PoDate { get; set; }
-    public string SupplierId { get; set; }
-}
-
-public class PoHistoryDto
-{
-    public string PoNumber { get; set; }
-    public string ItemNumber { get; set; }
-    public string LocalSku { get; set; }
-    public string Quantity { get; set; }
-    public string Cost { get; set; }
-}
-
-public class PurchaseOrderData
-{
-    public string Type { get; set; }
-    public string Id { get; set; }
-    public PurchaseOrdersDto Attributes { get; set; }
-}
-
-public class PurchaseOrderIncluded
-{
-    public string Type { get; set; }
-    public string Id { get; set; }
-    public PoHistoryDto Attributes { get; set; }
-}
-
-public class PurchaseOrderResponse
-{
-    public PurchaseOrderData Data { get; set; }
-    public PurchaseOrderIncluded[] Included { get; set; }
-}
-
-public class PurchaseOrdersResponse
-{
-    public PurchaseOrderData[] Data { get; set; }
-}
 
 public class PoApiClient : IPoApiClient
 {
@@ -56,7 +17,7 @@ public class PoApiClient : IPoApiClient
     {
         try
         {
-            var response = await _httpClient.GetAsync($"/api/v1/purchaseorders/{id}?include=poHistory");
+            var response = await _httpClient.GetAsync($"/api/v1/purchaseorders/{id}");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             var dataResponse = JsonConvert.DeserializeObject<PurchaseOrderResponse>(json);
@@ -66,20 +27,26 @@ public class PoApiClient : IPoApiClient
                 PoNumber = int.Parse(dataResponse.Data.Id),
                 SupplierId = int.Parse(dataResponse.Data.Attributes.SupplierId),
                 PoDate = DateTime.Parse(dataResponse.Data.Attributes.PoDate),
+                Terms = dataResponse.Data.Attributes.Terms,
                 Items = new List<PurchaseOrderItem>()
             };
 
-            foreach (var includedItem in dataResponse.Included)
-            {
-                po.Items.Add(new PurchaseOrderItem
+            var poHistoryResponse = await _httpClient.GetAsync($"/api/v1/poHistory?filter=equals(poNumber,'{id}')");
+            var jsonPoHistoryResponse = await poHistoryResponse.Content.ReadAsStringAsync();
+            var contentPoHistoryResponse = JsonConvert.DeserializeObject<PoHistoryResponse>(jsonPoHistoryResponse);
+
+            if (contentPoHistoryResponse?.Data != null)
+                foreach (var item in contentPoHistoryResponse.Data)
                 {
-                    PoNumber = int.Parse(dataResponse.Data.Id),
-                    ItemNumber = int.Parse(includedItem.Attributes.ItemNumber),
-                    LocalSku = includedItem.Attributes.LocalSku,
-                    Quantity = int.Parse(includedItem.Attributes.Quantity),
-                    Cost = double.Parse(includedItem.Attributes.Cost)
-                });
-            }
+                    po.Items.Add(new PurchaseOrderItem
+                    {
+                        PoNumber = int.Parse(item.Id),
+                        ItemNumber = item.Attributes.ItemNumber,
+                        LocalSku = item.Attributes.LocalSku,
+                        Quantity = item.Attributes.Quantity,
+                        Cost = item.Attributes.Cost
+                    });
+                }
 
             return po;
         }

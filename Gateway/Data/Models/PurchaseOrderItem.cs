@@ -1,4 +1,4 @@
-namespace Gateway.Data;
+namespace Gateway.Data.Models;
 
 public class PurchaseOrderItem
 {

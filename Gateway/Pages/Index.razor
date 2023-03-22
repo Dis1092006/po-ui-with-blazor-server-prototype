@@ -1,12 +1,12 @@
 ﻿@page "/"
 
 @using Gateway.Services
-@using Gateway.Data
+@using Gateway.Data.Models
 
 @inject IPurchaseOrderService PurchaseOrderService
 @inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Gateway</PageTitle>
 
 <RadzenDataList Data="@_purchaseOrders">
     <Template Context="purchaseOrder">
