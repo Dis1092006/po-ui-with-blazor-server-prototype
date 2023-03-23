@@ -1,0 +1,20 @@
+@using Gateway.Data.Models
+
+<h3>Purchase Order: @PoNumber</h3>
+
+<RadzenText>Date: @PurchaseOrder?.PoDate</RadzenText>
+<RadzenText>Supplier Id: @PurchaseOrder?.SupplierId</RadzenText>
+<RadzenText>Terms: @PurchaseOrder?.Terms</RadzenText>
+
+<RadzenDataGrid Data="@PurchaseOrder?.Items" TItem="PurchaseOrderItem" AllowPaging="true" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+    <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="PurchaseOrderItem" Property="ItemNumber" Title="Item number"/>
+        <RadzenDataGridColumn Width="200px" TItem="PurchaseOrderItem" Property="LocalSku" Title="Local SKU"/>
+        <RadzenDataGridColumn Width="50px" TItem="PurchaseOrderItem" Property="Quantity" Title="Quantity"/>
+        <RadzenDataGridColumn Width="50px" TItem="PurchaseOrderItem" Title="Cost">
+            <Template Context="item">
+                @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", item.Cost)
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
