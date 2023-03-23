@@ -17,8 +17,8 @@ public class PurchaseOrderService : IPurchaseOrderService
         return await _poApiClient.GetPurchaseOrderAsync(poNumber);
     }
 
-    public async Task<List<PurchaseOrder>> GetPurchaseOrdersAsync()
+    public Task<IEnumerable<PurchaseOrder>?> GetPurchaseOrdersAsync(int pageNumber, int pageSize)
     {
-        return await _poApiClient.GetPurchaseOrdersAsync();
+        return _poApiClient.GetPurchaseOrdersAsync(pageNumber, pageSize);
     }
 }

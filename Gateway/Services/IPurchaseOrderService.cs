@@ -6,5 +6,5 @@ public interface IPurchaseOrderService
 {
     public Task<PurchaseOrder> GetPurchaseOrderAsync(int poNumber);
 
-    public Task<List<PurchaseOrder>> GetPurchaseOrdersAsync();
+    public Task<IEnumerable<PurchaseOrder>?> GetPurchaseOrdersAsync(int pageNumber, int pageSize);
 }

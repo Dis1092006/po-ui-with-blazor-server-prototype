@@ -1,0 +1,17 @@
+@using Gateway.Data.Models
+
+<h3>Purchase Orders</h3>
+
+<RadzenDataGrid KeyProperty="PoNumber" IsLoading="@_isLoading" Count="@_count" Data="@_purchaseOrders" LoadData="@LoadData" AllowPaging="true" PageSize="10" PagerHorizontalAlign="HorizontalAlign.Center" TItem="PurchaseOrder" ColumnWidth="200px">
+    <Columns>
+        <RadzenDataGridColumn TItem="PurchaseOrder" Property="PoNumber" Title="PO Number" Frozen="true" Width="50px" TextAlign="TextAlign.Center"/>
+        <RadzenDataGridColumn TItem="PurchaseOrder" Property="PoDate" Title="PO date" Width="50px" TextAlign="TextAlign.Center"/>
+        <RadzenDataGridColumn TItem="PurchaseOrder" Property="SupplierId" Title="Supplier ID" Width="50px" TextAlign="TextAlign.Center"/>
+        <RadzenDataGridColumn TItem="PurchaseOrder" Property="Terms" Title="Terms" Width="50px" TextAlign="TextAlign.Center"/>
+        <RadzenDataGridColumn TItem="PurchaseOrder" Context="purchaseOrder" TextAlign="TextAlign.Right" Width="156px">
+            <Template Context="purchaseOrder">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(() => ViewPoClicked(@purchaseOrder))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>

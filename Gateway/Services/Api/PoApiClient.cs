@@ -57,30 +57,22 @@ public class PoApiClient : IPoApiClient
         }
     }
 
-    public async Task<List<PurchaseOrder>> GetPurchaseOrdersAsync()
+    public async Task<IEnumerable<PurchaseOrder>?> GetPurchaseOrdersAsync(int pageNumber, int pageSize)
     {
-        var result = new List<PurchaseOrder>();
-        var page = 1;
-        var pageSize = 10;
-
         var response =
             await _httpClient.GetAsync(
-                $"/api/v1/purchaseorders?sort=-poDate&page[size]={pageSize}&page[number]={page}");
+                $"/api/v1/purchaseorders?sort=-poDate&page[size]={pageSize}&page[number]={pageNumber}");
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
         var dataResponse = JsonConvert.DeserializeObject<PurchaseOrdersResponse>(json);
-        foreach (var purchaseOrderData in dataResponse.Data)
-        {
-            var po = new PurchaseOrder
-            {
-                PoNumber = int.Parse(purchaseOrderData.Id),
-                SupplierId = int.Parse(purchaseOrderData.Attributes.SupplierId),
-                PoDate = DateTime.Parse(purchaseOrderData.Attributes.PoDate),
-                Items = new List<PurchaseOrderItem>()
-            };
-            result.Add(po);
-        }
 
-        return result;
+        return dataResponse?.Data.Select(purchaseOrderData => new PurchaseOrder
+        {
+            PoNumber = int.Parse(purchaseOrderData.Id), 
+            SupplierId = int.Parse(purchaseOrderData.Attributes.SupplierId),
+            PoDate = DateTime.Parse(purchaseOrderData.Attributes.PoDate),
+            Terms = purchaseOrderData.Attributes.Terms,
+            Items = new List<PurchaseOrderItem>()
+        });
     }
 }
