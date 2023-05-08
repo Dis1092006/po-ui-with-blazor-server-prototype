@@ -1,3 +1,4 @@
+using Gateway.Data.State;
 using Gateway.Services;
 using Gateway.Services.Api;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
+builder.Services.AddScoped<AppState>();
 
 builder.Services.AddHttpClient<IPoApiClient, PoApiClient>(client =>
 {

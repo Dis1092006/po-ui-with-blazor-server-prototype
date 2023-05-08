@@ -1,0 +1,23 @@
+@using Gateway.Data.State
+
+@inject AppState AppState
+
+<RadzenDropDown @bind-Value="@_value" Change="@ChangeWarehouse" Data="@_warehouses" Style="width: 100%; max-width: 400px;" />
+
+@code {
+    string _value = AppState.DefaultWarehouse;
+    IEnumerable<string>? _warehouses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _warehouses = new string[] { AppState.DefaultWarehouse, "East warehouse", "West warehouse", "South warehouse" };
+    }
+
+    private void ChangeWarehouse()
+    {
+        AppState.SetWarehouse(_value);
+    }
+
+}
